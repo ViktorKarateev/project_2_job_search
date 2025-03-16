@@ -9,5 +9,3 @@ venv/
 .idea/
 .vscode/
 
-# Poetry
-poetry.lock
