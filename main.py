@@ -1,7 +1,7 @@
 def user_interaction():
     from src.hh_api import HeadHunterAPI
     from src.vacancy import Vacancy
-    from src.JSONSaver import JSONSaver
+    from src.json_saver import JSONSaver
 
     hh_api = HeadHunterAPI()
     saver = JSONSaver()

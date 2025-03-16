@@ -7,7 +7,9 @@ from src.file_saver import FileHandler
 class JSONSaver(FileHandler):
     """Класс для сохранения вакансий в JSON-файл."""
 
-    def __init__(self, file_name: str = "vacancies.json") -> None:
+    def __init__(self, file_name: str = "data/vacancies.json") -> None:
+        # Создаём директорию, если её нет
+        os.makedirs(os.path.dirname(file_name), exist_ok=True)
         self.__file_name = file_name
 
     def add_vacancy(self, vacancy: Vacancy) -> None:

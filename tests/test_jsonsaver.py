@@ -2,7 +2,7 @@ import json
 import pytest  # noqa: F401
 import os  # noqa: F401
 from src.vacancy import Vacancy
-from src.JSONSaver import JSONSaver
+from src.json_saver import JSONSaver
 
 
 def test_add_vacancy(tmp_path):
