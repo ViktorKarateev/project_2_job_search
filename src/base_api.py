@@ -17,3 +17,4 @@ class APIHandler(ABC):
         :return: Список словарей с вакансиями
         """
         pass
+
