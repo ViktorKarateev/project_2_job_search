@@ -52,7 +52,7 @@ class Vacancy:
         """
         Класс-метод: создает объект Vacancy из словаря HH.
         """
-        title = data.get("name")
+        title = data.get("name")  # Это правильный ключ для "title", а не "title"
         url = data.get("alternate_url")
         salary = data.get("salary") or {}
         salary_from = salary.get("from")
@@ -69,3 +69,6 @@ class Vacancy:
             responsibility=responsibility
         )
 
+    def __repr__(self):
+        """Строковое представление вакансии."""
+        return f"{self.title} - {self.salary_from} - {self.salary_to}"
