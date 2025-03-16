@@ -1,5 +1,6 @@
 import json
 import pytest # noqa: F401
+import os
 from src.vacancy import Vacancy
 from src.JSONSaver import JSONSaver
 
@@ -83,3 +84,10 @@ def test_delete_vacancy_by_title(tmp_path):
     vacancies = saver.get_vacancies()
     assert len(vacancies) == 1
     assert vacancies[0]["title"] == "Junior Java Developer"
+
+
+@pytest.fixture
+def temp_saver(tmp_path):
+    """Фикстура: создает временный файл и Saver."""
+    file_path = tmp_path / "test_vacancies.json"
+    return JSONSaver(str(file_path))
