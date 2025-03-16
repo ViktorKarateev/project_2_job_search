@@ -13,12 +13,12 @@ class HeadHunterAPI(APIHandler, ABC):
     def __init__(self) -> None:
         self.url = "https://api.hh.ru/vacancies"
         self.headers = {"User-Agent": "HH-Job-Search-App"}
-        self.params = {
+        self.params: dict[str, str | int] = {
             "text": "",
             "page": 0,
             "per_page": 20
         }
-        self.vacancies = []
+        self.vacancies: List[Dict] = []
 
     def load_vacancies(self, keyword: str) -> List[Dict]:
         """Загрузка вакансий с hh.ru по ключевому слову"""
@@ -26,7 +26,7 @@ class HeadHunterAPI(APIHandler, ABC):
         self.params["page"] = 0
         self.vacancies = []
 
-        while self.params["page"] < 1:
+        while int(self.params["page"]) < 1:
             response = requests.get(
                 self.url,
                 headers=self.headers,
@@ -39,7 +39,7 @@ class HeadHunterAPI(APIHandler, ABC):
 
             data = response.json()
             self.vacancies.extend(data.get("items", []))
-            self.params["page"] += 1
+            self.params["page"] = int(self.params["page"]) + 1
 
         print(f"[INFO] Найдено вакансий: {len(self.vacancies)}")
         return self.vacancies

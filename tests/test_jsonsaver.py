@@ -1,6 +1,6 @@
 import json
-import pytest # noqa: F401
-import os
+import pytest  # noqa: F401
+import os  # noqa: F401
 from src.vacancy import Vacancy
 from src.JSONSaver import JSONSaver
 
@@ -30,6 +30,7 @@ def test_add_vacancy(tmp_path):
     assert data[0]["salary_from"] == 50000
     assert data[0]["responsibility"] == "Поддержка внутренних сервисов"
 
+
 def test_delete_vacancy(tmp_path):
     """Тест удаления вакансии по полному совпадению объекта."""
     test_file = tmp_path / "test_vacancies.json"
@@ -51,6 +52,7 @@ def test_delete_vacancy(tmp_path):
     # Удалим и проверим, что список стал пуст
     saver.delete_vacancy(vacancy)
     assert saver.get_vacancies() == []
+
 
 def test_delete_vacancy_by_title(tmp_path):
     """Тест удаления вакансии по названию (без учёта регистра и по части слова)."""

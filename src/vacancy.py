@@ -35,7 +35,9 @@ class Vacancy:
     def __lt__(self, other: "Vacancy") -> bool:
         return self.salary_from < other.salary_from
 
-    def __eq__(self, other: "Vacancy") -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Vacancy):
+            return NotImplemented
         return self.salary_from == other.salary_from
 
     def __str__(self) -> str:
@@ -52,8 +54,8 @@ class Vacancy:
         """
         Класс-метод: создает объект Vacancy из словаря HH.
         """
-        title = data.get("name")  # Это правильный ключ для "title", а не "title"
-        url = data.get("alternate_url")
+        title = data.get("name") or "Без названия"
+        url = data.get("alternate_url") or "Нет ссылки"
         salary = data.get("salary") or {}
         salary_from = salary.get("from")
         salary_to = salary.get("to")

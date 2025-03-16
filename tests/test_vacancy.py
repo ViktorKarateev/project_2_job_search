@@ -1,4 +1,4 @@
-import pytest # noqa: F401
+import pytest  # noqa: F401
 from src.vacancy import Vacancy
 
 
@@ -21,6 +21,7 @@ def test_vacancy_creation():
     assert vacancy.requirement == "Python, Django"
     assert vacancy.responsibility == "Backend development"
 
+
 def test_vacancy_repr():
     """Тест на корректность строки представления объекта Vacancy."""
     vacancy_data = {
@@ -34,6 +35,7 @@ def test_vacancy_repr():
 
     # Проверяем, что строка представления объекта выглядит как ожидается
     assert repr(vacancy) == "Python Developer - 100000 - 150000"
+
 
 def test_vacancy_comparison():
     """Тест на сравнение объектов Vacancy по зарплате."""
