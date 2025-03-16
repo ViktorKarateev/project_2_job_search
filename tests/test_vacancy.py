@@ -1,6 +1,7 @@
 import pytest # noqa: F401
 from src.vacancy import Vacancy
 
+
 def test_vacancy_creation():
     """Тест на создание объекта Vacancy."""
     vacancy_data = {
