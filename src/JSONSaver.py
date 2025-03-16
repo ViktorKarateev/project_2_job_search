@@ -36,24 +36,33 @@ class JSONSaver(FileHandler):
             return json.load(f)
 
     def delete_vacancy(self, vacancy: Vacancy) -> None:
-        """Удаление вакансии из файла по совпадению всех полей."""
         vacancies = self.get_vacancies()
 
-        # Создаем словарь из переданного объекта
-        vacancy_dict = {
+        # Преобразуем все поля в нижний регистр для сравнения
+        def normalize(vac: dict) -> tuple:
+            return (
+                vac["title"].lower(),
+                vac["url"].lower(),
+                str(vac["salary_from"]),
+                str(vac["salary_to"]),
+                vac["requirement"].lower(),
+                vac["responsibility"].lower()
+            )
+
+        target = normalize({
             "title": vacancy.title,
             "url": vacancy.url,
             "salary_from": vacancy.salary_from,
             "salary_to": vacancy.salary_to,
             "requirement": vacancy.requirement,
-            "responsibility": vacancy.responsibility
-        }
+            "responsibility": vacancy.responsibility,
+        })
 
-        if vacancy_dict in vacancies:
-            vacancies.remove(vacancy_dict)
-            with open(self.__file_name, "w", encoding="utf-8") as file:
-                json.dump(vacancies, file, indent=2, ensure_ascii=False)
-            print(f"[INFO] Вакансия удалена: {vacancy.title}")
+        updated = [v for v in vacancies if normalize(v) != target]
+
+        if len(updated) < len(vacancies):
+            with open(self.__file_name, "w", encoding="utf-8") as f:
+                json.dump(updated, f, ensure_ascii=False, indent=4)
+            print("[INFO] Вакансия удалена.")
         else:
-            print(f"[WARNING] Вакансия не найдена: {vacancy.title}")
-
+            print("[WARN] Вакансия не найдена.")
