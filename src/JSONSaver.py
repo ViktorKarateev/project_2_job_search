@@ -11,9 +11,9 @@ class JSONSaver(FileHandler):
         self.__file_name = file_name
 
     def add_vacancy(self, vacancy: Vacancy) -> None:
+        """Добавляет вакансию в файл."""
         vacancies = self.get_vacancies()
 
-        # Конвертируем объект в словарь
         vacancy_dict = {
             "title": vacancy.title,
             "url": vacancy.url,
@@ -23,46 +23,33 @@ class JSONSaver(FileHandler):
             "responsibility": vacancy.responsibility,
         }
 
-        # Проверка на дубль
         if vacancy_dict not in vacancies:
             vacancies.append(vacancy_dict)
             with open(self.__file_name, "w", encoding="utf-8") as f:
                 json.dump(vacancies, f, ensure_ascii=False, indent=4)
 
     def get_vacancies(self) -> list[dict]:
+        """Получает список всех вакансий из файла."""
         if not os.path.exists(self.__file_name):
             return []
         with open(self.__file_name, "r", encoding="utf-8") as f:
             return json.load(f)
 
     def delete_vacancy(self, vacancy: Vacancy) -> None:
+        """
+        Удаляет вакансию из файла по названию (без учёта регистра).
+        """
+        title_lower = vacancy.title.lower()
         vacancies = self.get_vacancies()
 
-        # Преобразуем все поля в нижний регистр для сравнения
-        def normalize(vac: dict) -> tuple:
-            return (
-                vac["title"].lower(),
-                vac["url"].lower(),
-                str(vac["salary_from"]),
-                str(vac["salary_to"]),
-                vac["requirement"].lower(),
-                vac["responsibility"].lower()
-            )
+        updated_vacancies = [
+            v for v in vacancies if v.get("title", "").lower() != title_lower
+        ]
 
-        target = normalize({
-            "title": vacancy.title,
-            "url": vacancy.url,
-            "salary_from": vacancy.salary_from,
-            "salary_to": vacancy.salary_to,
-            "requirement": vacancy.requirement,
-            "responsibility": vacancy.responsibility,
-        })
-
-        updated = [v for v in vacancies if normalize(v) != target]
-
-        if len(updated) < len(vacancies):
+        if len(updated_vacancies) < len(vacancies):
             with open(self.__file_name, "w", encoding="utf-8") as f:
-                json.dump(updated, f, ensure_ascii=False, indent=4)
-            print("[INFO] Вакансия удалена.")
+                json.dump(updated_vacancies, f, ensure_ascii=False, indent=4)
+            print("[INFO] Вакансия успешно удалена.")
         else:
             print("[WARN] Вакансия не найдена.")
+
