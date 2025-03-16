@@ -46,3 +46,17 @@ class Vacancy:
             f" Требования: {self.requirement}\n"
             f" Обязанности: {self.responsibility}\n"
         )
+    @classmethod
+    def from_dict(cls, data: dict) -> "Vacancy":
+        """
+        Класс-метод: создает объект Vacancy из словаря HH.
+        """
+        title = data.get("name")
+        url = data.get("alternate_url")
+        salary = data.get("salary", {})
+        salary_from = salary.get("from")
+        salary_to = salary.get("to")
+        requirement = data.get("snippet", {}).get("requirement")
+        responsibility = data.get("snippet", {}).get("responsibility")
+
+        return cls(title, url, salary_from, salary_to, requirement, responsibility)
