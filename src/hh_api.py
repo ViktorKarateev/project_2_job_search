@@ -39,7 +39,7 @@ class HeadHunterAPI(APIHandler, ABC):
 
             data = response.json()
             self.vacancies.extend(data.get("items", []))
-            self.params["page"] = int(self.params["page"]) + 1
+            self.params["page"] = int(self.params ["page"]) + 1
 
         print(f"[INFO] Найдено вакансий: {len(self.vacancies)}")
         return self.vacancies
