@@ -11,46 +11,50 @@ class HeadHunterAPI(APIHandler, ABC):
     """
 
     def __init__(self) -> None:
-        self.url = "https://api.hh.ru/vacancies"
-        self.headers = {"User-Agent": "HH-Job-Search-App"}
-        self.params: dict[str, str | int] = {
+        self.__url = "https://api.hh.ru/vacancies"
+        self.__headers = {"User-Agent": "HH-Job-Search-App"}
+        self.__params: dict[str, str | int] = {
             "text": "",
             "page": 0,
             "per_page": 20
         }
-        self.vacancies: List[Dict] = []
+        self.__vacancies: List[Dict] = []
 
     def connect(self) -> None:
-        """
-        Заглушка метода подключения к API hh.ru.
-        Пока подключение не требуется, но метод реализован для соответствия абстракции.
-        """
-        print("[INFO] Подключение к API hh.ru успешно (заглушка)")
+        """Проверка подключения к API hh.ru"""
+        try:
+            response = requests.get(self.__url, headers=self.__headers, params={"text": "python"})
+            response.raise_for_status()
+            print("[INFO] Подключение к API hh.ru успешно.")
+        except requests.exceptions.RequestException as e:
+            print(f"[ERROR] Ошибка подключения к API: {e}")
 
-    def load_vacancies(self, keyword: str) -> List[Dict]:
+    def __load_vacancies(self, keyword: str) -> List[Dict]:
         """Загрузка вакансий с hh.ru по ключевому слову"""
-        self.params["text"] = keyword
-        self.params["page"] = 0
-        self.vacancies = []
+        self.__params["text"] = keyword
+        self.__params["page"] = 0
+        self.__vacancies = []
 
-        while int(self.params["page"]) < 1:
-            response = requests.get(
-                self.url,
-                headers=self.headers,
-                params=self.params
-            )
+        while int(self.__params["page"]) < 1:
 
-            if response.status_code != 200:
-                print(f"[ERROR] Ошибка запроса: {response.status_code}")
+            try:
+                response = requests.get(
+                    self.__url,
+                    headers=self.__headers,
+                    params=self.__params
+                )
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                print(f"[ERROR] Ошибка при запросе вакансий: {e}")
                 break
 
             data = response.json()
-            self.vacancies.extend(data.get("items", []))
-            self.params["page"] = int(self.params ["page"]) + 1
+            self.__vacancies.extend(data.get("items", []))
+            self.__params["page"] = int(self.__params["page"]) + 1
 
-        print(f"[INFO] Найдено вакансий: {len(self.vacancies)}")
-        return self.vacancies
+        print(f"[INFO] Найдено вакансий: {len(self.__vacancies)}")
+        return self.__vacancies
 
     def get_vacancies(self, keyword: str) -> List[Dict]:
         """Реализация абстрактного метода получения вакансий"""
-        return self.load_vacancies(keyword)
+        return self.__load_vacancies(keyword)
