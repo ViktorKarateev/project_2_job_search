@@ -17,3 +17,8 @@ class APIHandler(ABC):
         :return: Список словарей с вакансиями
         """
         pass
+
+    @abstractmethod
+    def connect(self) -> None:
+        """Метод подключения к API."""
+        pass

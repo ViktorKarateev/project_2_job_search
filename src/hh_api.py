@@ -20,6 +20,13 @@ class HeadHunterAPI(APIHandler, ABC):
         }
         self.vacancies: List[Dict] = []
 
+    def connect(self) -> None:
+        """
+        Заглушка метода подключения к API hh.ru.
+        Пока подключение не требуется, но метод реализован для соответствия абстракции.
+        """
+        print("[INFO] Подключение к API hh.ru успешно (заглушка)")
+
     def load_vacancies(self, keyword: str) -> List[Dict]:
         """Загрузка вакансий с hh.ru по ключевому слову"""
         self.params["text"] = keyword
