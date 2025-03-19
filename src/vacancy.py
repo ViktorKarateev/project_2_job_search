@@ -17,12 +17,12 @@ class Vacancy:
         requirement: Optional[str],
         responsibility: Optional[str]
     ):
-        self.title = title
-        self.url = url
+        self.title = self._validate_string(title, "Без названия")
+        self.url = self._validate_string(url, "Нет ссылки")
         self.salary_from = self._validate_salary(salary_from)
         self.salary_to = self._validate_salary(salary_to)
-        self.requirement = requirement or "Не указано"
-        self.responsibility = responsibility or "Не указано"
+        self.requirement = self._validate_string(requirement)
+        self.responsibility = self._validate_string(responsibility)
 
     @staticmethod
     def _validate_salary(value: Optional[int]) -> int:
@@ -31,6 +31,16 @@ class Vacancy:
         Если значение None — возвращает 0.
         """
         return value if value is not None else 0
+
+    @staticmethod
+    def _validate_string(value: Optional[str], default: str = "Не указано") -> str:
+        """
+        Валидирует строковое значение.
+        Если None или пусто — возвращает значение по умолчанию.
+        """
+        if not value or not value.strip():
+            return default
+        return value.strip()
 
     def __lt__(self, other: "Vacancy") -> bool:
         return self.salary_from < other.salary_from
