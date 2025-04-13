@@ -1,0 +1,86 @@
+from typing import Optional
+
+
+class Vacancy:
+    """
+    Класс для представления вакансии как объекта.
+    """
+
+    __slots__ = ("title", "url", "salary_from", "salary_to", "requirement", "responsibility")
+
+    def __init__(
+        self,
+        title: str,
+        url: str,
+        salary_from: Optional[int],
+        salary_to: Optional[int],
+        requirement: Optional[str],
+        responsibility: Optional[str]
+    ):
+        self.title = self._validate_string(title, "Без названия")
+        self.url = self._validate_string(url, "Нет ссылки")
+        self.salary_from = self._validate_salary(salary_from)
+        self.salary_to = self._validate_salary(salary_to)
+        self.requirement = self._validate_string(requirement)
+        self.responsibility = self._validate_string(responsibility)
+
+    @staticmethod
+    def _validate_salary(value: Optional[int]) -> int:
+        """
+        Валидирует значение зарплаты.
+        Если значение None — возвращает 0.
+        """
+        return value if value is not None else 0
+
+    @staticmethod
+    def _validate_string(value: Optional[str], default: str = "Не указано") -> str:
+        """
+        Валидирует строковое значение.
+        Если None или пусто — возвращает значение по умолчанию.
+        """
+        if not value or not value.strip():
+            return default
+        return value.strip()
+
+    def __lt__(self, other: "Vacancy") -> bool:
+        return self.salary_from < other.salary_from
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Vacancy):
+            return NotImplemented
+        return self.salary_from == other.salary_from
+
+    def __str__(self) -> str:
+        return (
+            f" {self.title}\n"
+            f" {self.url}\n"
+            f" Зарплата: от {self.salary_from} до {self.salary_to} руб.\n"
+            f" Требования: {self.requirement}\n"
+            f" Обязанности: {self.responsibility}\n"
+        )
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Vacancy":
+        """
+        Класс-метод: создает объект Vacancy из словаря HH.
+        """
+        title = data.get("name") or "Без названия"
+        url = data.get("alternate_url") or "Нет ссылки"
+        salary = data.get("salary") or {}
+        salary_from = salary.get("from")
+        salary_to = salary.get("to")
+        requirement = data.get("snippet", {}).get("requirement")
+        responsibility = data.get("snippet", {}).get("responsibility")
+
+        return cls(
+            title=title,
+            url=url,
+            salary_from=salary_from,
+            salary_to=salary_to,
+            requirement=requirement,
+            responsibility=responsibility
+        )
+
+    def __repr__(self):
+        """Строковое представление вакансии."""
+        return f"{self.title} - {self.salary_from} - {self.salary_to}"
